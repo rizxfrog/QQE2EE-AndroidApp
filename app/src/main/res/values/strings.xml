@@ -1,0 +1,177 @@
+<resources>
+    <string name="app_name">NekoCrypt</string>
+
+    <!--    闲杂信息-->
+    <string name="ok">原来是这样，现在我完全搞懂了</string>
+    <string name="cancel">关闭</string>
+    <string name="send">发送</string>
+    <string name="accept">确认</string>
+    <string name="file_size">文件大小</string>
+    <string name="url">URL</string>
+    <string name="download">下载</string>
+    <string name="finish">完成</string>
+    <string name="delete">删除</string>
+    <string name="downloading">下载中</string>
+    <string name="not_installed">未安装</string>
+    <string name="open_file">打开文件</string>
+    <string name="cannot_open_file">打开文件失败</string>
+    <string name="checking_for_update">检查更新中...</string>
+    <string name="check_for_update_failed">检查更新失败，请检查网络连接</string>
+    <string name="is_newest_version">"已经是最新版本啦 (ฅ´ω`ฅ)"</string>
+    <string name="find_new_version">发现新版本: %s！</string>
+    <string name="save_to_gallery">保存到相册</string>
+    <string name="image_saved_to_gallery_success">成功保存到相册</string>
+    <string name="image_saved_to_gallery_failed">保存到相册失败</string>
+    <string name="image_saved_to_gallery_saved">已保存到相册</string>
+    <string name="has_copy">已复制到剪切板</string>
+    <string name="please_grant_overlay_permission">请打开悬浮窗权限！</string>
+    <string name="please_grant_accessibility_service_permission">请开启无障碍服务！</string>
+
+    <!--    bottomBar的label-->
+    <string name="home">主页</string>
+    <string name="crypto">加密</string>
+    <string name="key">密钥</string>
+    <string name="settings">设置</string>
+
+
+
+    <!--    加解密模式-->
+    <string name="mode_standard">标准模式</string>
+    <string name="mode_immersive">沉浸模式</string>
+    <!--    CryptoScreen -->
+    <string name="crypto_input_label">输入原文或密文</string>
+    <string name="crypto_input_placeholder">在此处输入或粘贴文本…</string>
+    <string name="crypto_decrypt_fail">解密失败！密文被篡改或密钥错误.\n ｡ﾟ(ﾟ´Д｀ﾟ)ﾟ｡</string>
+    <string name="crypto_input_icon_desc">输入图标</string>
+    <string name="crypto_pasted_from_clipboard">已从剪贴板粘贴</string>
+    <string name="crypto_paste_icon_desc">粘贴</string>
+    <string name="crypto_clear_input_icon_desc">清空输入</string>
+    <string name="crypto_encrypt_icon_desc">加密图标</string>
+    <string name="crypto_swap_icon_desc">交换输入与输出</string>
+    <string name="crypto_decrypt_button">解密</string>
+    <string name="crypto_decrypt_icon_desc">解密图标</string>
+    <string name="crypto_result_label_encrypted">加密结果</string>
+    <string name="crypto_result_label_decrypted">解密结果</string>
+    <string name="crypto_copied_to_clipboard">已复制到剪贴板</string>
+    <string name="crypto_copy_result_icon_desc">复制结果</string>
+    <string name="crypto_key_icon_desc">密钥图标</string>
+    <string name="crypto_current_key_label">当前密钥</string>
+    <string name="crypto_select_key_icon_desc">选择密钥</string>
+    <!-- CryptoScreen 统计信息 -->
+    <string name="crypto_stats_char_count">密文字符数</string>
+    <string name="crypto_stats_time_elapsed">总处理耗时</string>
+    <string name="crypto_stats_time_ms">%1$d ms</string>
+    <!--    无障碍页面信息-->
+    <string name="accessibility_service_about">喵密服务，用于智能加解密消息</string>
+    <string name="accessibility_service_description">为保证功能正常使用，需要申请无障碍权限哦 (๑•̀ㅂ•́)و✧</string>
+    <!--    Home界面的一些文本-->
+    <string name="accessibility_service_enabled">已获取无障碍权限</string>
+    <string name="accessibility_service_disabled">点击开启无障碍权限</string>
+    <string name="setting_encrypt_on_send_title">加密开关</string>
+    <string name="setting_encrypt_on_send_subtitle">开启喵密世界的大门。</string>
+    <string name="setting_decrypt_immersive_mod_title">解密开关</string>
+    <string name="setting_decrypt_immersive_mod_subtitle">读懂猫咪语言的必选项！</string>
+    <string name="setting_encryption_mode_info_title">设置加密模式</string>
+    <string name="setting_encryption_mode_info_text">加密模式说明</string>
+    <string name="setting_encryption_mode_info_desc">标准模式：\n长按发送按钮才会发送密文。\n\n沉浸模式：\n点按直接发送密文。</string>
+    <string name="setting_decryption_mode_info_title">设置解密模式</string>
+    <string name="setting_decryption_mode_info_text">解密模式说明</string>
+    <string name="setting_decryption_mode_info_desc">标准模式：\n点击密文弹出悬浮窗显示解密结果。\n\n沉浸模式：\n无需点击，直接以悬浮窗显示解密后的密文，但会增加一定耗电量。</string>
+
+    <!--    通知栏显示文本-->
+    <string name="notification_title">NekoCrypt 喵密服务运行中</string>
+    <string name="set_text_failed">密文设置失败喵！可能是字数过多喵… (｡◕ˇ‸ˇ◕｡)：%d 字</string>
+
+    <!--    权限检查相关-->
+    <string name="permission_go_to_settings">前往设置</string>
+    <string name="permission_overlay_title">需要悬浮窗权限</string>
+    <string name="permission_overlay_text">为了功能正常使用，请您手动授予权限。\n\n在设置页面，请寻找并开启“显示在其他应用上层”选项。\n\n在部分手机(如小米、华为)上，还可能额外有“悬浮窗权限”，请一同在应用的权限管理中寻找并开启它。</string>
+    <string name="permission_still_missing_title">仍未检测到悬浮窗权限</string>
+    <string name="permission_still_missing_text">喵密检测到悬浮窗权限仍未开启。别担心，这是因为各大手机厂商有更高的悬浮窗权限控制。\n\n请在接下来打开的应用设置页面中，手动找到并开启“悬浮窗”或“显示在其他应用上层”的相关权限。</string>
+    <!--    下面这两条暂时用不着-->
+    <string name="permission_accessibility_title">需要无障碍服务</string>
+    <string name="permission_accessibility_text">为了实现自动加解密和读取聊天内容，请在设置列表中找到“NekoCrypt”并开启它的无障碍服务。</string>
+    <!--    设置-->
+    <string name="crypto_settings">加解密设置</string>
+    <string name="decryption_long_press_delay">长按解密延时</string>
+    <string name="decryption_long_press_delay_desc">设置触发长按加密所需的时间</string>
+    <string name="decryption_window_show_time">解密密文展示时长</string>
+    <string name="decryption_window_show_time_desc">设置解密密文悬浮窗的显示时间</string>
+    <string name="about">关于</string>
+    <string name="about_dialog_title">关于NekoCrypt</string>
+    <string name="version">软件版本：%s</string>
+    <string name="github">Github 项目地址</string>
+    <string name="about_dialog_content">NekoCrypt (喵密) 是一款方便好用的全局APP加解密软件！(ฅ´ω`ฅ)\n\n双击输入框可以拉起附件发送界面哦！✨\n\n如果您喜欢本软件，请到Github项目主页为我点上一个Star吧！ପ(๑•̀ㅂ•́)و✧\n\n本项目仅供学习交流，任何法律问题均需用户自行负责哦~ ( •̀ ω •́ )✧ 使用NekoCrypt即表示您同意该条款。\n\n    ——Made by WJZ_P with love❤️.</string>
+    <!--    设置：界面相关-->
+    <string name="crypto_ui_settings">功能界面设置</string>
+    <string name="decryption_window_position_update_delay">弹窗位置更新延时</string>
+    <string name="decryption_window_position_update_delay_desc">在沉浸式解密下，密文弹窗位置更新的时间间隔，越短越实时，但可能导致卡顿</string>
+    <string name="pick_color">选择颜色</string>
+    <string name="send_btn_overlay_color">按钮遮罩颜色</string>
+    <string name="send_btn_overlay_color_desc">支持ARGB和RGB格式，用于设置盖在发送按钮上遮罩的颜色。最后一个是纯透明</string>
+    <string name="double_click_threshold">拉起多媒体弹窗的双击间隔</string>
+    <string name="double_click_threshold_desc">在间隔时间内双击输入框，会拉起发送多媒体消息的弹窗</string>
+    <!--    附件发送页面-->
+    <string name="crypto_attachment_title">发送加密附件</string>
+    <string name="crypto_attachment_media">相册</string>
+    <string name="crypto_attachment_file">文件</string>
+    <string name="crypto_attachment_upload_failed">文件上传失败：%s</string>
+    <string name="crypto_attachment_file_not_found">文件不存在！</string>
+    <string name="crypto_attachment_file_not_accessible">文件无法访问！</string>
+    <string name="crypto_attachment_file_too_large">文件过大！当前最大支持：%d MB</string>
+    <string name="crypto_attachment_send_failed_node_not_found">输入框或发送按钮节点未找到！</string>
+    <string name="crypto_attachment_chosen_path">已选择: %s</string>
+    <string name="crypto_attachment_uploading">"正在加密上传..."</string>
+
+    <!--    图片文件下载、展示页面-->
+    <string name="dialog_download_file_download_failed">文件下载失败：%s</string>
+    <string name="dialog_download_file_file_info">文件详情</string>
+
+    <!--    密钥管理相关-->
+    <string name="key_management_dialog_key_management">密钥管理</string>
+    <string name="key_management_dialog_key_add">添加</string>
+    <string name="key_screen_supported_app">默认支持应用</string>
+    <string name="key_screen_supported_app_description">可能失效，推荐手动扫描添加</string>
+    <string name="key_screen_custom_app">自定义应用</string>
+    <string name="key_screen_no_custom_app_configured">暂未添加自定义APP</string>
+    <string name="key_screen_supported_app_input_id">输入框 ID：</string>
+    <string name="key_screen_supported_app_send_btn_id">发送按钮 ID：</string>
+    <string name="key_screen_supported_app_message_text_id">消息气泡 ID：</string>
+    <string name="key_screen_supported_app_message_list_class_name">消息列表类名：</string>
+    <string name="add_custom_app">添加自定义APP</string>
+    <string name="enable_scanner_mode">扫描模式</string>
+    <string name="enable_scanner_mode_description">屏幕上会出现用于扫描当前界面的按钮</string>
+    <string name="key_screen_delete_config_toast">APP配置已删除</string>
+    <string name="key_screen_new_key_placeholder">回车以保存新密钥...</string>
+
+    <!--    扫描界面相关-->
+    <string name="scanner_dialog_title">扫描结果</string>
+    <string name="scanner_get_result_fail">获取扫描结果失败！</string>
+    <string name="scanner_dialog_section_input">输入框</string>
+    <string name="scanner_dialog_section_send_btn">发送按钮</string>
+    <string name="scanner_dialog_section_msg_list">消息列表</string>
+    <string name="scanner_dialog_section_msg_text">文本节点</string>
+    <string name="scanner_dialog_card_id">ID</string>
+    <string name="scanner_dialog_card_class">类名</string>
+    <string name="scanner_dialog_card_text">文本</string>
+    <string name="scanner_dialog_card_desc">描述</string>
+    <string name="scanner_scanning">描述</string>
+    <string name="scanner_help_dialog_title">扫描功能介绍</string>
+    <string name="scanner_help_dialog_intro">必须选择正确的输入框、发送按钮、消息列表、消息节点。</string>
+    <string name="scanner_help_dialog_instruction">点击即可选中，只有四种全部选择完才可以点击确认，之后就自动保存当前软件的节点信息用于加解密。可通过节点的具体内容确认是否是所需节点。特别注意的是消息节点，必须正确选择包含正确消息内容的节点！</string>
+    <string name="scanner_config_saved_toast">扫描配置已保存</string>
+
+    <!--    密文风格相关-->
+    <string name="cipher_style_title">密文语种选择</string>
+    <string name="cipher_style_description">加密后的文本可以选择不同风格！</string>
+    <string name="cipher_style_neko">猫娘语</string>
+    <string name="cipher_style_nier">尼尔语</string>
+    <string name="cipher_style_manbo">曼波语</string>
+    <string name="cipher_style_bangboo">邦布语</string>
+    <string name="cipher_style_Hilichurlian">丘丘语</string>
+
+    <string name="crypto_style_selector_label">密文语种选择</string>
+    <string name="ciphertext_length_title">密文长度选择</string>
+    <string name="ciphertext_length_subtitle">密文词组数为闭区间内的随机值</string>
+
+</resources>

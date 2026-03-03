@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猫咪头像编辑器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #d1d5db; /* gray-300 */
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+        input[type=range]:hover {
+            opacity: 1;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #4f46e5; /* indigo-600 */
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        input[type=range]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #4f46e5; /* indigo-600 */
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .dark input[type=range] {
+            background: #4b5563; /* gray-600 */
+        }
+        .gradient-dir-btn.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8">
+        <div class="flex flex-col items-center">
+            
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">猫咪头像编辑器</h2>
+            
+            <div id="mainPreview" class="w-64 h-64 md:w-80 md:h-80 bg-blue-500 rounded-2xl flex items-center justify-center p-4 transition-all duration-300">
+                <svg id="logoSvg" width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path id="logoPath" d="M 15 85 L 35 30 L 50 60 L 65 30 L 85 85 M 40 70 L 50 80 L 60 70" 
+                          stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+            </div>
+
+            <div class="w-full mt-6 space-y-4">
+                <div>
+                    <label for="lineColorHex" class="block text-sm font-medium text-gray-700 dark:text-gray-300">线条颜色</label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <input type="color" id="lineColorPicker" value="#FFFFFF" class="w-12 h-10 p-1 border border-gray-300 dark:border-gray-600 rounded-l-md cursor-pointer">
+                        <input type="text" id="lineColorHex" value="#FFFFFF" class="block w-full h-10 px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-r-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">背景渐变色</label>
+                    <div class="mt-1 grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="bgColor1Hex" class="block text-xs font-medium text-gray-500 dark:text-gray-400">颜色 1</label>
+                            <div class="mt-1 flex rounded-md shadow-sm">
+                                <input type="color" id="bgColor1Picker" value="#3B82F6" class="w-12 h-10 p-1 border border-gray-300 dark:border-gray-600 rounded-l-md cursor-pointer">
+                                <input type="text" id="bgColor1Hex" value="#3B82F6" class="block w-full h-10 px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-r-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="bgColor2Hex" class="block text-xs font-medium text-gray-500 dark:text-gray-400">颜色 2</label>
+                            <div class="mt-1 flex rounded-md shadow-sm">
+                                <input type="color" id="bgColor2Picker" value="#66ccff" class="w-12 h-10 p-1 border border-gray-300 dark:border-gray-600 rounded-l-md cursor-pointer">
+                                <input type="text" id="bgColor2Hex" value="#66ccff" class="block w-full h-10 px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-r-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <label class="block text-xs font-medium text-gray-500 dark:text-gray-400">方向</label>
+                        <div id="gradientDirection" class="mt-1 grid grid-cols-4 gap-2 rounded-lg bg-gray-200 dark:bg-gray-700 p-1">
+                            <button class="gradient-dir-btn p-1 rounded-md text-sm active" data-dir="to bottom">↓</button>
+                            <button class="gradient-dir-btn p-1 rounded-md text-sm" data-dir="to right">→</button>
+                            <button class="gradient-dir-btn p-1 rounded-md text-sm" data-dir="to bottom right">↘</button>
+                            <button class="gradient-dir-btn p-1 rounded-md text-sm" data-dir="to top left">↖</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-4">
+                    <div>
+                        <label for="strokeWidth" class="block text-sm font-medium text-gray-700 dark:text-gray-300">线条粗细: <span id="strokeWidthValue">7</span></label>
+                        <input type="range" id="strokeWidth" min="2" max="20" value="7" class="mt-1 w-full cursor-pointer">
+                    </div>
+                    <div>
+                        <label for="overallScale" class="block text-sm font-medium text-gray-700 dark:text-gray-300">整体缩放: <span id="overallScaleValue">100</span>%</label>
+                        <input type="range" id="overallScale" min="50" max="150" value="100" class="mt-1 w-full cursor-pointer">
+                    </div>
+                    <div>
+                        <label for="bodyAngle" class="block text-sm font-medium text-gray-700 dark:text-gray-300">猫身角度: <span id="bodyAngleValue">3</span></label>
+                        <input type="range" id="bodyAngle" min="-10" max="15" value="3" class="mt-1 w-full cursor-pointer">
+                    </div>
+                     <div>
+                        <label for="bodyLength" class="block text-sm font-medium text-gray-700 dark:text-gray-300">猫身长度: <span id="bodyLengthValue">3</span></label>
+                        <input type="range" id="bodyLength" min="-15" max="15" value="3" class="mt-1 w-full cursor-pointer">
+                    </div>
+                    <div>
+                        <label for="earDistance" class="block text-sm font-medium text-gray-700 dark:text-gray-300">猫耳距离: <span id="earDistanceValue">-10</span></label>
+                        <input type="range" id="earDistance" min="-15" max="10" value="-10" class="mt-1 w-full cursor-pointer">
+                    </div>
+                    <div>
+                        <label for="smileDistance" class="block text-sm font-medium text-gray-700 dark:text-gray-300">笑容距离: <span id="smileDistanceValue">-7</span></label>
+                        <input type="range" id="smileDistance" min="-10" max="15" value="-7" class="mt-1 w-full cursor-pointer">
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full mt-8 border-t border-gray-200 dark:border-gray-700 pt-6 space-y-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-center text-gray-800 dark:text-white mb-2">下载图标资源</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="downloadForegroundPng" class="w-full bg-sky-500 text-white font-bold py-2 px-3 rounded-lg hover:bg-sky-600 transition-colors text-sm">前景 (PNG)</button>
+                        <button id="downloadForegroundSvg" class="w-full bg-sky-700 text-white font-bold py-2 px-3 rounded-lg hover:bg-sky-800 transition-colors text-sm">前景 (SVG)</button>
+                        <button id="downloadBackgroundPng" class="w-full bg-teal-500 text-white font-bold py-2 px-3 rounded-lg hover:bg-teal-600 transition-colors text-sm">背景 (PNG)</button>
+                        <button id="downloadBackgroundSvg" class="w-full bg-teal-700 text-white font-bold py-2 px-3 rounded-lg hover:bg-teal-800 transition-colors text-sm">背景 (SVG)</button>
+                    </div>
+                </div>
+                <button id="downloadSvg" class="w-full bg-gray-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-700 transition-colors">下载完整版 (SVG)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mainPreview = document.getElementById('mainPreview');
+        const logoSvg = document.getElementById('logoSvg');
+        const logoPath = document.getElementById('logoPath');
+        
+        const lineColorPicker = document.getElementById('lineColorPicker');
+        const lineColorHex = document.getElementById('lineColorHex');
+        const bgColor1Picker = document.getElementById('bgColor1Picker');
+        const bgColor1Hex = document.getElementById('bgColor1Hex');
+        const bgColor2Picker = document.getElementById('bgColor2Picker');
+        const bgColor2Hex = document.getElementById('bgColor2Hex');
+        const gradientDirectionContainer = document.getElementById('gradientDirection');
+        
+        const strokeWidth = document.getElementById('strokeWidth');
+        const strokeWidthValue = document.getElementById('strokeWidthValue');
+        const overallScale = document.getElementById('overallScale');
+        const overallScaleValue = document.getElementById('overallScaleValue');
+        const bodyAngle = document.getElementById('bodyAngle');
+        const bodyAngleValue = document.getElementById('bodyAngleValue');
+        const bodyLength = document.getElementById('bodyLength');
+        const bodyLengthValue = document.getElementById('bodyLengthValue');
+        const earDistance = document.getElementById('earDistance');
+        const earDistanceValue = document.getElementById('earDistanceValue');
+        const smileDistance = document.getElementById('smileDistance');
+        const smileDistanceValue = document.getElementById('smileDistanceValue');
+        
+        const downloadForegroundPng = document.getElementById('downloadForegroundPng');
+        const downloadForegroundSvg = document.getElementById('downloadForegroundSvg');
+        const downloadBackgroundPng = document.getElementById('downloadBackgroundPng');
+        const downloadBackgroundSvg = document.getElementById('downloadBackgroundSvg');
+        const downloadSvg = document.getElementById('downloadSvg');
+
+        let currentGradientDirection = 'to bottom';
+
+        // ✨ 核心修正：恢复完整的 updateLogo 函数
+        function updateLogo() {
+            const lineColorValue = lineColorHex.value;
+            const bgColor1Value = bgColor1Hex.value;
+            const bgColor2Value = bgColor2Hex.value;
+
+            logoPath.setAttribute('stroke', lineColorValue);
+            mainPreview.style.background = `linear-gradient(${currentGradientDirection}, ${bgColor1Value}, ${bgColor2Value})`;
+            
+            strokeWidthValue.textContent = strokeWidth.value;
+            logoPath.setAttribute('stroke-width', strokeWidth.value);
+
+            const angle = parseInt(bodyAngle.value, 10);
+            const length = parseInt(bodyLength.value, 10);
+            const earDist = parseInt(earDistance.value, 10);
+            const smileDist = parseInt(smileDistance.value, 10);
+            
+            const mPath = `M ${15 - angle} ${85 + length + earDist} L 35 ${30 + earDist} L 50 ${60 + earDist} L 65 ${30 + earDist} L ${85 + angle} ${85 + length + earDist}`;
+            const vPath = `M 40 ${70 + smileDist} L 50 ${80 + smileDist} L 60 ${70 + smileDist}`;
+            
+            logoPath.setAttribute('d', `${mPath} ${vPath}`);
+            bodyAngleValue.textContent = angle;
+            bodyLengthValue.textContent = length;
+            earDistanceValue.textContent = earDist;
+            smileDistanceValue.textContent = smileDist;
+
+            const scale = parseInt(overallScale.value, 10) / 100;
+            const size = 100 / scale;
+            const offset = (100 - size) / 2;
+            logoSvg.setAttribute('viewBox', `${offset} ${offset} ${size} ${size}`);
+            overallScaleValue.textContent = overallScale.value;
+        }
+
+        // ✨ 核心修正：恢复完整的事件监听逻辑
+        function syncColorInputs(picker, hex) { hex.value = picker.value; updateLogo(); }
+        function syncHexInputs(hex, picker) { picker.value = hex.value; updateLogo(); }
+
+        lineColorPicker.addEventListener('input', () => syncColorInputs(lineColorPicker, lineColorHex));
+        lineColorHex.addEventListener('input', () => syncHexInputs(lineColorHex, lineColorPicker));
+        bgColor1Picker.addEventListener('input', () => syncColorInputs(bgColor1Picker, bgColor1Hex));
+        bgColor1Hex.addEventListener('input', () => syncHexInputs(bgColor1Hex, bgColor1Hex));
+        bgColor2Picker.addEventListener('input', () => syncColorInputs(bgColor2Picker, bgColor2Hex));
+        bgColor2Hex.addEventListener('input', () => syncHexInputs(bgColor2Hex, bgColor2Picker));
+        
+        document.querySelectorAll('input[type="range"]').forEach(slider => slider.addEventListener('input', updateLogo));
+
+        gradientDirectionContainer.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                gradientDirectionContainer.querySelector('.active').classList.remove('active');
+                e.target.classList.add('active');
+                currentGradientDirection = e.target.dataset.dir;
+                updateLogo();
+            }
+        });
+
+        // --- 下载逻辑 ---
+        function downloadCanvas(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function downloadSvgContent(svgContent, filename) {
+            const svgBlob = new Blob([svgContent], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(svgBlob);
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        downloadForegroundPng.addEventListener('click', () => {
+            const tempCanvas = document.createElement('canvas');
+            const size = 108;
+            tempCanvas.width = size;
+            tempCanvas.height = size;
+            const tempCtx = tempCanvas.getContext('2d');
+            const svgString = new XMLSerializer().serializeToString(logoSvg);
+            const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(svgBlob);
+
+            const img = new Image();
+            img.onload = () => {
+                tempCtx.clearRect(0, 0, size, size);
+                tempCtx.drawImage(img, 0, 0, size, size);
+                URL.revokeObjectURL(url);
+                downloadCanvas(tempCanvas, 'foreground.png');
+            };
+            img.src = url;
+        });
+
+        downloadBackgroundPng.addEventListener('click', () => {
+            const tempCanvas = document.createElement('canvas');
+            const size = 108;
+            tempCanvas.width = size;
+            tempCanvas.height = size;
+            const tempCtx = tempCanvas.getContext('2d');
+            const gradientCoords = {'to bottom': [0, 0, 0, size], 'to right': [0, 0, size, 0], 'to bottom right': [0, 0, size, size], 'to top left': [size, size, 0, 0]}[currentGradientDirection];
+            const gradient = tempCtx.createLinearGradient(...gradientCoords);
+            gradient.addColorStop(0, bgColor1Hex.value);
+            gradient.addColorStop(1, bgColor2Hex.value);
+            tempCtx.fillStyle = gradient;
+            tempCtx.fillRect(0, 0, size, size);
+            downloadCanvas(tempCanvas, 'background.png');
+        });
+
+        downloadForegroundSvg.addEventListener('click', () => {
+            const viewBoxValue = logoSvg.getAttribute('viewBox');
+            const svgContent = `
+                <svg width="108" height="108" viewBox="${viewBoxValue}" xmlns="http://www.w3.org/2000/svg">
+                    <path d="${logoPath.getAttribute('d')}" 
+                          stroke="${lineColorHex.value}" 
+                          stroke-width="${strokeWidth.value}" 
+                          stroke-linecap="round" 
+                          stroke-linejoin="round" 
+                          fill="none"/>
+                </svg>`;
+            downloadSvgContent(svgContent, 'foreground.svg');
+        });
+
+        downloadBackgroundSvg.addEventListener('click', () => {
+            const viewBoxValue = "0 0 108 108";
+            const gradientCoords = {'to bottom': { x1: '0%', y1: '0%', x2: '0%', y2: '100%' }, 'to right': { x1: '0%', y1: '0%', x2: '100%', y2: '0%' }, 'to bottom right': { x1: '0%', y1: '0%', x2: '100%', y2: '100%' }, 'to top left': { x1: '100%', y1: '100%', x2: '0%', y2: '0%' }}[currentGradientDirection];
+            const svgContent = `
+                <svg width="108" height="108" viewBox="${viewBoxValue}" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="backgroundGradient" x1="${gradientCoords.x1}" y1="${gradientCoords.y1}" x2="${gradientCoords.x2}" y2="${gradientCoords.y2}">
+                            <stop offset="0%" stop-color="${bgColor1Hex.value}" />
+                            <stop offset="100%" stop-color="${bgColor2Hex.value}" />
+                        </linearGradient>
+                    </defs>
+                    <rect x="0" y="0" width="108" height="108" fill="url(#backgroundGradient)" />
+                </svg>`;
+            downloadSvgContent(svgContent, 'background.svg');
+        });
+
+        downloadSvg.addEventListener('click', () => {
+            const viewBoxValue = logoSvg.getAttribute('viewBox');
+            const [x, y, width, height] = viewBoxValue.split(' ');
+            const gradientCoords = {'to bottom': { x1: '0%', y1: '0%', x2: '0%', y2: '100%' }, 'to right': { x1: '0%', y1: '0%', x2: '100%', y2: '0%' }, 'to bottom right': { x1: '0%', y1: '0%', x2: '100%', y2: '100%' }, 'to top left': { x1: '100%', y1: '100%', x2: '0%', y2: '0%' }}[currentGradientDirection];
+            const fullSvgString = `
+                <svg width="256" height="256" viewBox="${viewBoxValue}" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="backgroundGradient" x1="${gradientCoords.x1}" y1="${gradientCoords.y1}" x2="${gradientCoords.x2}" y2="${gradientCoords.y2}">
+                            <stop offset="0%" stop-color="${bgColor1Hex.value}" />
+                            <stop offset="100%" stop-color="${bgColor2Hex.value}" />
+                        </linearGradient>
+                    </defs>
+                    <rect x="${x}" y="${y}" width="${width}" height="${height}" fill="url(#backgroundGradient)" />
+                    <path d="${logoPath.getAttribute('d')}" 
+                          stroke="${lineColorHex.value}" 
+                          stroke-width="${strokeWidth.value}" 
+                          stroke-linecap="round" 
+                          stroke-linejoin="round" 
+                          fill="none"/>
+                </svg>`;
+            downloadSvgContent(fullSvgString, 'cat-avatar-full.svg');
+        });
+        
+        // ✨ 核心修正：在页面加载时，调用一次 updateLogo 来应用所有默认值
+        updateLogo();
+    </script>
+</body>
+</html>

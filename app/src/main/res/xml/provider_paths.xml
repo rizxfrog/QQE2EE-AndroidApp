@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 这个标签授权分享内部缓存 (context.cacheDir) -->
+    <cache-path
+        name="internal_cache"
+        path="." />
+
+    <!-- ✨ 这是关键！这个标签授权分享外部缓存 (context.externalCacheDir) ✨ -->
+    <external-cache-path
+        name="external_cache"
+        path="." />
+</paths>
