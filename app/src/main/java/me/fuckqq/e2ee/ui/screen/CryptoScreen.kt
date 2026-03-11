@@ -32,8 +32,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.rounded.Notes
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ContentPaste
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -43,6 +45,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -74,6 +77,7 @@ import me.fuckqq.e2ee.R
 import me.fuckqq.e2ee.SettingKeys.CIPHERTEXT_STYLE
 import me.fuckqq.e2ee.SettingKeys.CURRENT_KEY
 import me.fuckqq.e2ee.data.rememberKeyArrayState
+import me.fuckqq.e2ee.data.rememberSecretChatSessionState
 import me.fuckqq.e2ee.hook.rememberDataStoreState
 import me.fuckqq.e2ee.ui.dialog.FilePreviewDialog
 import me.fuckqq.e2ee.ui.dialog.KeyManagementDialog
@@ -83,6 +87,8 @@ import me.fuckqq.e2ee.util.CryptoManager
 import me.fuckqq.e2ee.util.CryptoManager.applyCiphertextStyle
 import me.fuckqq.e2ee.util.CryptoManager.containsCiphertext
 import me.fuckqq.e2ee.util.NCFileProtocol
+import me.fuckqq.e2ee.util.PeerSession
+import me.fuckqq.e2ee.util.SessionKeyManager
 import me.fuckqq.e2ee.util.getCacheFileFor
 import me.fuckqq.e2ee.util.getUriForFile
 import java.io.IOException
@@ -98,6 +104,7 @@ fun CryptoScreen(modifier: Modifier = Modifier) {
     val secretKey: String by rememberDataStoreState(CURRENT_KEY, DEFAULT_SECRET_KEY)
     //  这里还要拿密钥列表，for循环遍历解密
     val secretKeyList by rememberKeyArrayState()
+    val secretChatSessions by rememberSecretChatSessionState()
 
     //  当前的密文风格类型
     var ciphertextStyleType by rememberDataStoreState(CIPHERTEXT_STYLE, CiphertextStyleType.NEKO.toString())
@@ -206,6 +213,12 @@ fun CryptoScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // 2. 输入文本框
+        SecretChatSessionManagerCard(
+            sessions = secretChatSessions
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         OutlinedTextField(
             value = inputText,
             onValueChange = { inputText = it },
@@ -466,6 +479,135 @@ fun KeySelector(
                 contentDescription = stringResource(id = R.string.crypto_select_key_icon_desc),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
+        }
+    }
+}
+
+@Composable
+private fun SecretChatSessionManagerCard(
+    sessions: List<PeerSession>,
+    modifier: Modifier = Modifier
+) {
+    val scope = rememberCoroutineScope()
+    var sessionToDelete by remember { mutableStateOf<PeerSession?>(null) }
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = "Secret Chat 会话",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = if (sessions.isEmpty()) {
+                    "当前还没有已建立的 Secret Chat 会话。"
+                } else {
+                    "删除这里的聊天对象后，会一并删除共享密钥。下次需要重新发送 /secret chat 才能重新建立会话。"
+                },
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f)
+            )
+
+            if (sessions.isEmpty()) {
+                Text(
+                    text = "暂无会话",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f)
+                )
+            } else {
+                sessions.forEach { session ->
+                    SecretChatSessionItem(
+                        session = session,
+                        onDelete = { sessionToDelete = session }
+                    )
+                }
+            }
+        }
+    }
+
+    sessionToDelete?.let { session ->
+        AlertDialog(
+            onDismissRequest = { sessionToDelete = null },
+            title = { Text("删除 Secret Chat 会话？") },
+            text = {
+                Text(
+                    "删除 ${session.peerDisplayName ?: session.peerIdRaw ?: session.peerHash} 后，会移除该聊天对象的共享密钥。之后必须重新发送 /secret chat 才能恢复 Secret Chat。"
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        scope.launch {
+                            SessionKeyManager.removeSession(session.peerHash)
+                            sessionToDelete = null
+                        }
+                    }
+                ) {
+                    Text("删除")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { sessionToDelete = null }) {
+                    Text("取消")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun SecretChatSessionItem(
+    session: PeerSession,
+    onDelete: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.75f)
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = session.peerDisplayName ?: session.peerIdRaw ?: session.peerHash,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = session.peerUniqueId ?: session.peerIdRaw ?: session.peerHash.take(12),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            IconButton(onClick = onDelete) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "删除 Secret Chat 会话",
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
         }
     }
 }

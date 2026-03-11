@@ -107,6 +107,13 @@ object SessionKeyManager {
         cachedStore.clear()
     }
 
+    fun removeSession(peerHash: String) {
+        ensureLoaded()
+        if (cachedStore.remove(peerHash) != null) {
+            persist()
+        }
+    }
+
     private fun handleIncomingInit(peer: PeerDescriptor, payload: HandshakePayload): HandshakeAction {
         ensureLoaded()
         val existing = cachedStore[peer.hash]

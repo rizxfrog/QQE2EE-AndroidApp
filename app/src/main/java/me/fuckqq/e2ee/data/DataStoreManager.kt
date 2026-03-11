@@ -19,6 +19,8 @@ import kotlinx.serialization.json.Json
 import me.fuckqq.e2ee.Constant
 import me.fuckqq.e2ee.SettingKeys
 import me.fuckqq.e2ee.service.handler.CustomAppHandler
+import me.fuckqq.e2ee.util.PeerSession
+import me.fuckqq.e2ee.util.SecretChatMode
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -52,8 +54,26 @@ fun rememberCustomAppListState(initialValue: List<CustomAppHandler> = emptyList(
     return dataStoreManager.getCustomAppsFlow().collectAsState(initial = initialValue)
 }
 
+@Composable
+fun rememberSecretChatSessionState(initialValue: List<PeerSession> = emptyList()): State<List<PeerSession>> {
+    val dataStoreManager = LocalDataStoreManager.current
+    return dataStoreManager.getSecretChatSessionsFlow().collectAsState(initial = initialValue)
+}
 
 class DataStoreManager(private val context: Context) {
+    fun getSecretChatSessionsFlow(): Flow<List<PeerSession>> {
+        return getSettingFlow(SettingKeys.SESSION_STORE, "{}").map { jsonString ->
+            try {
+                Json.decodeFromString<Map<String, PeerSession>>(jsonString)
+                    .values
+                    .filter { it.mode == SecretChatMode.SECRET_ESTABLISHED && it.sharedKey != null }
+                    .sortedByDescending { it.updatedAt }
+            } catch (e: Exception) {
+                Log.e("QQE2EE", "瑙ｆ瀽 secret chat 浼氳瘽澶辫触", e)
+                emptyList()
+            }
+        }
+    }
 
     //通用的读取方法 (使用泛型)
     fun <T> getSettingFlow(key: Preferences.Key<T>, defaultValue: T): Flow<T> {
