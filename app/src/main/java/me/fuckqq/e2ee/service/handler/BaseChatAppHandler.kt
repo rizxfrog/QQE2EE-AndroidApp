@@ -15,12 +15,15 @@ import android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 import android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.FrameLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import com.dianming.phoneapp.MyAccessibilityService
 import kotlinx.coroutines.Dispatchers
@@ -64,6 +67,7 @@ val LocalFileActionHandler = compositionLocalOf<((NCFileProtocol) -> Unit)?> { n
 abstract class BaseChatAppHandler : ChatAppHandler {
     companion object {
         private const val SECRET_CHAT_COMMAND = "/secret chat"
+        private const val SECRET_CHAT_BADGE_TAG = "secret_chat_badge"
     }
 
     protected val tag = "NCBaseHandler"
@@ -437,8 +441,25 @@ abstract class BaseChatAppHandler : ChatAppHandler {
         val params = getOverlayLayoutParams(rect)
         currentService.serviceScope.launch(Dispatchers.Main) {
             if (overlayView == null) {
-                overlayView = View(currentService).apply {
+                overlayView = FrameLayout(currentService).apply {
                     setBackgroundColor(currentService.sendBtnOverlayColor.toColorInt())
+                    addView(
+                        TextView(currentService).apply {
+                            tag = SECRET_CHAT_BADGE_TAG
+                            text = "SC"
+                            textSize = 10f
+                            setTextColor(ContextCompat.getColor(currentService, android.R.color.white))
+                            setBackgroundColor(0xAA1B5E20.toInt())
+                            setPadding(10, 4, 10, 4)
+                            visibility = View.GONE
+                        },
+                        FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT
+                        ).apply {
+                            gravity = Gravity.TOP or Gravity.END
+                        }
+                    )
 
                     // ✨ 1. 首先，为视图定义一个标准的“单击”行为
                     // 这就是我们的“标准门铃按钮”。
@@ -491,6 +512,7 @@ abstract class BaseChatAppHandler : ChatAppHandler {
                         }
                     }
                 }
+                updateOverlaySecretChatBadge()
                 overlayWindowManager?.addView(overlayView, params)
                 // 第一次添加进去的时候，位置很可能是歪的，延迟一定时间然后更新悬浮窗位置。
                 delay(1500)
@@ -505,6 +527,7 @@ abstract class BaseChatAppHandler : ChatAppHandler {
                 }
                 Log.d(tag, "悬浮窗位置修正，修正后位置：$rect")
             } else {
+                updateOverlaySecretChatBadge()
                 overlayWindowManager?.updateViewLayout(overlayView, params)
             }
         }
@@ -520,6 +543,12 @@ abstract class BaseChatAppHandler : ChatAppHandler {
                 onComplete?.invoke()
             }
         }
+    }
+
+    private fun updateOverlaySecretChatBadge() {
+        val badge = (overlayView as? FrameLayout)?.findViewWithTag<TextView>(SECRET_CHAT_BADGE_TAG)
+            ?: return
+        badge.visibility = if (isSecretChatActiveForCurrentPeer()) View.VISIBLE else View.GONE
     }
 
     // 自动加密并发送消息
@@ -584,6 +613,10 @@ abstract class BaseChatAppHandler : ChatAppHandler {
 
     private fun encryptWithDefaultKey(plaintext: String, defaultKey: String): String {
         return CryptoManager.encrypt(plaintext, defaultKey).applyCiphertextStyle()
+    }
+
+    private fun isSecretChatActiveForCurrentPeer(): Boolean {
+        return SessionKeyManager.getActiveSharedKey(resolveCurrentPeerDescriptor()) != null
     }
 
     protected fun doNormalClick() {

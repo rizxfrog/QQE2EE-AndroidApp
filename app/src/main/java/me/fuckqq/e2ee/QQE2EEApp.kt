@@ -4,6 +4,10 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import me.fuckqq.e2ee.data.DataStoreManager
 
 class QQE2EEApp : Application() {
@@ -17,6 +21,9 @@ class QQE2EEApp : Application() {
         super.onCreate()
         createNotificationChannel() // 创建通知渠道，用于在 Android 8.0 及以上版本上显示通知
         instance = this
+        CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
+            dataStoreManager.ensureDefaultKeyInitialized()
+        }
         Log.d(TAG, "QQE2EEApp onCreate")
     }
 

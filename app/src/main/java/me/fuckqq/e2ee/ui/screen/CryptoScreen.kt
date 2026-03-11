@@ -92,6 +92,8 @@ import me.fuckqq.e2ee.util.SessionKeyManager
 import me.fuckqq.e2ee.util.getCacheFileFor
 import me.fuckqq.e2ee.util.getUriForFile
 import java.io.IOException
+import java.text.DateFormat
+import java.util.Date
 
 @Composable
 fun CryptoScreen(modifier: Modifier = Modifier) {
@@ -599,6 +601,11 @@ private fun SecretChatSessionItem(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                Text(
+                    text = "更新时间：${formatSessionUpdatedAt(session.updatedAt)}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f)
+                )
             }
 
             IconButton(onClick = onDelete) {
@@ -633,6 +640,12 @@ private fun openFile(context: Context, scope: CoroutineScope, uri: Uri, fileInfo
             Toast.makeText(context,context.getString(R.string.cannot_open_file),Toast.LENGTH_SHORT).show()
         }
     }
+}
+
+private fun formatSessionUpdatedAt(updatedAt: Long): String {
+    if (updatedAt <= 0L) return "未知"
+    return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
+        .format(Date(updatedAt))
 }
 
 private suspend fun saveImageToGallery(context: Context,uri: Uri, fileInfo: NCFileProtocol): Boolean {

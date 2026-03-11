@@ -11,7 +11,7 @@ import me.fuckqq.e2ee.service.handler.WeChatHandler
 
 object Constant {
     const val APP_NAME = "QQE2EE"
-    const val DEFAULT_SECRET_KEY = "20251011"    //
+    const val DEFAULT_SECRET_KEY = ""    //
 
     // ---- 其他 ----
     const val EDIT_TEXT="EditText"

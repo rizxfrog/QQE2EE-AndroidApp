@@ -16,11 +16,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import me.fuckqq.e2ee.Constant
 import me.fuckqq.e2ee.SettingKeys
 import me.fuckqq.e2ee.service.handler.CustomAppHandler
 import me.fuckqq.e2ee.util.PeerSession
 import me.fuckqq.e2ee.util.SecretChatMode
+import java.security.SecureRandom
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
@@ -61,6 +61,25 @@ fun rememberSecretChatSessionState(initialValue: List<PeerSession> = emptyList()
 }
 
 class DataStoreManager(private val context: Context) {
+    suspend fun ensureDefaultKeyInitialized() {
+        val currentKey = readSetting(SettingKeys.CURRENT_KEY, "")
+        val allKeysJson = readSetting(SettingKeys.ALL_THE_KEYS, "[]")
+        val parsedKeys = try {
+            Json.decodeFromString<Array<String>>(allKeysJson).filter { it.isNotBlank() }
+        } catch (_: Exception) {
+            emptyList()
+        }
+
+        if (currentKey.isNotBlank() && parsedKeys.isNotEmpty()) {
+            return
+        }
+
+        val generatedKey = currentKey.takeIf { it.isNotBlank() } ?: generateRandomSecretKey()
+        val finalKeys = (parsedKeys + generatedKey).distinct().toTypedArray()
+        saveSetting(SettingKeys.CURRENT_KEY, generatedKey)
+        saveKeyArray(finalKeys)
+    }
+
     fun getSecretChatSessionsFlow(): Flow<List<PeerSession>> {
         return getSettingFlow(SettingKeys.SESSION_STORE, "{}").map { jsonString ->
             try {
@@ -122,14 +141,14 @@ class DataStoreManager(private val context: Context) {
      */
     fun getKeyArrayFlow(): Flow<Array<String>> {
         return getSettingFlow(SettingKeys.ALL_THE_KEYS, "[]").map { jsonString ->
-            if (jsonString.isEmpty()) arrayOf(Constant.DEFAULT_SECRET_KEY)
+            if (jsonString.isEmpty()) emptyArray()
             else {
                 try {
                     val keys = Json.decodeFromString<Array<String>>(jsonString)
-                    if (keys.isEmpty()) arrayOf(Constant.DEFAULT_SECRET_KEY) else keys
+                    keys.filter { it.isNotBlank() }.toTypedArray()
                 } catch (e: Exception) {
                     Log.e("Neko", "解析密钥数组失败!", e)
-                    arrayOf(Constant.DEFAULT_SECRET_KEY) //解析失败返回默认值
+                    emptyArray()
                 }
             }
         }
@@ -177,4 +196,9 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
+    private fun generateRandomSecretKey(): String {
+        val bytes = ByteArray(32)
+        SecureRandom().nextBytes(bytes)
+        return bytes.joinToString("") { "%02x".format(it) }
+    }
 }
