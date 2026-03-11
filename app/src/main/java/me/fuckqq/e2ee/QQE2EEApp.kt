@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 import me.fuckqq.e2ee.data.DataStoreManager
 
 class QQE2EEApp : Application() {
+    val applicationScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
     // 在 Application 创建时，我们懒加载地创建 DataStoreManager 的实例。
     // 它只会被创建一次！
     val dataStoreManager: DataStoreManager by lazy {
@@ -21,8 +23,9 @@ class QQE2EEApp : Application() {
         super.onCreate()
         createNotificationChannel() // 创建通知渠道，用于在 Android 8.0 及以上版本上显示通知
         instance = this
-        CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
+        applicationScope.launch {
             dataStoreManager.ensureDefaultKeyInitialized()
+            me.fuckqq.e2ee.util.SessionKeyManager.initialize()
         }
         Log.d(TAG, "QQE2EEApp onCreate")
     }

@@ -1,6 +1,8 @@
 package me.fuckqq.e2ee.util
 
 import android.util.Base64
+import android.util.Log
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -13,17 +15,25 @@ import java.security.spec.ECGenParameterSpec
 import java.security.spec.PKCS8EncodedKeySpec
 import java.security.spec.X509EncodedKeySpec
 import javax.crypto.KeyAgreement
-import kotlinx.coroutines.runBlocking
 
 object SessionKeyManager {
     private val dataStoreManager by lazy { QQE2EEApp.instance.dataStoreManager }
+    private val appScope by lazy { QQE2EEApp.instance.applicationScope }
     private val json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
     }
 
+    private val storeLock = Any()
     private var cachedStore: MutableMap<String, PeerSession> = mutableMapOf()
+    @Volatile
     private var loaded = false
+    @Volatile
+    private var loading = false
+
+    fun initialize() {
+        ensureLoaded()
+    }
 
     fun buildPeerDescriptor(
         packageName: String,
@@ -53,7 +63,7 @@ object SessionKeyManager {
 
     fun initiateSecretChat(peer: PeerDescriptor): HandshakeAction {
         ensureLoaded()
-        val existing = cachedStore[peer.hash]
+        val existing = synchronized(storeLock) { cachedStore[peer.hash] }
         if (existing?.mode == SecretChatMode.SECRET_ESTABLISHED && existing.sharedKey != null) {
             return HandshakeAction(
                 type = HandshakeActionType.ALREADY_ESTABLISHED,
@@ -75,7 +85,9 @@ object SessionKeyManager {
             sharedKey = null,
             updatedAt = System.currentTimeMillis()
         )
-        cachedStore[peer.hash] = session
+        synchronized(storeLock) {
+            cachedStore[peer.hash] = session
+        }
         persist()
 
         return HandshakeAction(
@@ -103,20 +115,26 @@ object SessionKeyManager {
     }
 
     fun clearInMemoryCache() {
-        loaded = false
-        cachedStore.clear()
+        synchronized(storeLock) {
+            loaded = false
+            loading = false
+            cachedStore.clear()
+        }
     }
 
     fun removeSession(peerHash: String) {
         ensureLoaded()
-        if (cachedStore.remove(peerHash) != null) {
+        val removed = synchronized(storeLock) {
+            cachedStore.remove(peerHash) != null
+        }
+        if (removed) {
             persist()
         }
     }
 
     private fun handleIncomingInit(peer: PeerDescriptor, payload: HandshakePayload): HandshakeAction {
         ensureLoaded()
-        val existing = cachedStore[peer.hash]
+        val existing = synchronized(storeLock) { cachedStore[peer.hash] }
         val incomingPublicKey = payload.pub
 
         if (
@@ -158,7 +176,9 @@ object SessionKeyManager {
             sharedKey = sharedKey,
             updatedAt = System.currentTimeMillis()
         )
-        cachedStore[peer.hash] = session
+        synchronized(storeLock) {
+            cachedStore[peer.hash] = session
+        }
         persist()
 
         return HandshakeAction(
@@ -177,7 +197,7 @@ object SessionKeyManager {
 
     private fun handleIncomingReply(peer: PeerDescriptor, payload: HandshakePayload): HandshakeAction {
         ensureLoaded()
-        val existing = cachedStore[peer.hash]
+        val existing = synchronized(storeLock) { cachedStore[peer.hash] }
             ?: return HandshakeAction(
                 type = HandshakeActionType.NO_OP,
                 payload = null,
@@ -205,15 +225,17 @@ object SessionKeyManager {
             peerHash = peer.hash
         )
 
-        cachedStore[peer.hash] = existing.copy(
-            peerIdRaw = peer.rawId,
-            peerDisplayName = peer.displayName,
-            peerUniqueId = peer.uniqueId,
-            mode = SecretChatMode.SECRET_ESTABLISHED,
-            remotePublicKey = payload.pub,
-            sharedKey = sharedKey,
-            updatedAt = System.currentTimeMillis()
-        )
+        synchronized(storeLock) {
+            cachedStore[peer.hash] = existing.copy(
+                peerIdRaw = peer.rawId,
+                peerDisplayName = peer.displayName,
+                peerUniqueId = peer.uniqueId,
+                mode = SecretChatMode.SECRET_ESTABLISHED,
+                remotePublicKey = payload.pub,
+                sharedKey = sharedKey,
+                updatedAt = System.currentTimeMillis()
+            )
+        }
         persist()
 
         return HandshakeAction(
@@ -225,26 +247,45 @@ object SessionKeyManager {
 
     private fun getSession(peerHash: String): PeerSession? {
         ensureLoaded()
-        return cachedStore[peerHash]
+        return synchronized(storeLock) { cachedStore[peerHash] }
     }
 
     private fun ensureLoaded() {
-        if (loaded) return
-        val raw = runBlocking {
-            dataStoreManager.readSetting(SettingKeys.SESSION_STORE, "{}")
+        if (loaded || loading) return
+        synchronized(storeLock) {
+            if (loaded || loading) return
+            loading = true
         }
-        cachedStore = try {
-            json.decodeFromString<Map<String, PeerSession>>(raw).toMutableMap()
-        } catch (_: Exception) {
-            mutableMapOf()
+        appScope.launch {
+            val raw = runCatching {
+                dataStoreManager.readSetting(SettingKeys.SESSION_STORE, "{}")
+            }.getOrElse { exception ->
+                Log.e("QQE2EE", "Failed to load secret chat sessions", exception)
+                "{}"
+            }
+            val decoded = try {
+                json.decodeFromString<Map<String, PeerSession>>(raw).toMutableMap()
+            } catch (_: Exception) {
+                mutableMapOf()
+            }
+            synchronized(storeLock) {
+                cachedStore = decoded
+                loaded = true
+                loading = false
+            }
         }
-        loaded = true
     }
 
     private fun persist() {
-        val encoded = json.encodeToString(cachedStore)
-        runBlocking {
-            dataStoreManager.saveSetting(SettingKeys.SESSION_STORE, encoded)
+        val encoded = synchronized(storeLock) {
+            json.encodeToString(cachedStore)
+        }
+        appScope.launch {
+            runCatching {
+                dataStoreManager.saveSetting(SettingKeys.SESSION_STORE, encoded)
+            }.onFailure { exception ->
+                Log.e("QQE2EE", "Failed to persist secret chat sessions", exception)
+            }
         }
     }
 
