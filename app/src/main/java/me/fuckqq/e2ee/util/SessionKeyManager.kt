@@ -161,8 +161,7 @@ object SessionKeyManager {
 
         val sharedKey = deriveSharedKey(
             privateKeyBase64 = localKeyPair.privateKey,
-            publicKeyBase64 = incomingPublicKey,
-            peerHash = peer.hash
+            publicKeyBase64 = incomingPublicKey
         )
 
         val session = (existing ?: PeerSession(peerHash = peer.hash)).copy(
@@ -221,8 +220,7 @@ object SessionKeyManager {
 
         val sharedKey = deriveSharedKey(
             privateKeyBase64 = localPrivateKey,
-            publicKeyBase64 = payload.pub,
-            peerHash = peer.hash
+            publicKeyBase64 = payload.pub
         )
 
         synchronized(storeLock) {
@@ -305,8 +303,7 @@ object SessionKeyManager {
 
     private fun deriveSharedKey(
         privateKeyBase64: String,
-        publicKeyBase64: String,
-        peerHash: String
+        publicKeyBase64: String
     ): String {
         val keyFactory = KeyFactory.getInstance("EC")
         val privateKey = keyFactory.generatePrivate(
@@ -321,7 +318,8 @@ object SessionKeyManager {
             generateSecret()
         }
         val digest = MessageDigest.getInstance("SHA-256")
-        val derived = digest.digest(sharedSecret + peerHash.toByteArray(Charsets.UTF_8))
+        val protocolContext = "qqe2ee_secret_chat_v1".toByteArray(Charsets.UTF_8)
+        val derived = digest.digest(sharedSecret + protocolContext)
         return derived.toBase64()
     }
 
