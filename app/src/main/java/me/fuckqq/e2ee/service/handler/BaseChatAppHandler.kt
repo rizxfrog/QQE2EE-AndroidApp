@@ -118,8 +118,11 @@ abstract class BaseChatAppHandler : ChatAppHandler {
 
 
     override fun onAccessibilityEvent(event: AccessibilityEvent, service: MyAccessibilityService) {
-        // ✨ 新增：监听窗口状态变化，更新聊天对象名称
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+        // 聊天对象缓存需要跟着窗口切换和内容切换一起刷新，避免沿用上一个会话
+        if (
+            event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ||
+            event.eventType == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
+        ) {
             updateChatPartnerName(event, service)
         }
         
@@ -1068,22 +1071,28 @@ abstract class BaseChatAppHandler : ChatAppHandler {
      */
   private fun updateChatPartnerName(event: AccessibilityEvent, service: MyAccessibilityService) {
         runCatching {
-            currentChatPartnerIdentifier = getCurrentChatPartnerIdentifier()
             val root = if (service.rootInActiveWindow.isEmpty()) getActiveWindowRoot()
             else service.rootInActiveWindow
 
+            var resolvedName: String? = null
             root?.let { rootNode ->
                 findChatPartnerName(rootNode)?.let { name ->
-                    updateResolvedChatPartner(name)
-                    return
+                    resolvedName = name
                 }
             }
 
-            val eventText = event.text
-                ?.mapNotNull { it?.toString()?.trim() }
-                ?.firstOrNull { isValidChatPartnerCandidate(it) }
-            if (eventText != null) {
-                updateResolvedChatPartner(eventText)
+            if (resolvedName == null) {
+                resolvedName = event.text
+                    ?.mapNotNull { it?.toString()?.trim() }
+                    ?.firstOrNull { isValidChatPartnerCandidate(it) }
+            }
+
+            if (resolvedName != null) {
+                updateResolvedChatPartner(resolvedName!!)
+            } else if (currentChatPartnerName != null || currentChatPartnerIdentifier != null) {
+                Log.d(tag, "聊天对象无法识别，清空缓存：$currentChatPartnerName / $currentChatPartnerIdentifier")
+                currentChatPartnerName = null
+                currentChatPartnerIdentifier = null
             }
         }.onFailure { exception ->
             Log.e(tag, "updateChatPartnerName 错误：${exception.message}")
@@ -1186,10 +1195,14 @@ abstract class BaseChatAppHandler : ChatAppHandler {
             return
         }
         val oldName = currentChatPartnerName
+        val oldIdentifier = currentChatPartnerIdentifier
         currentChatPartnerName = normalizedName
-        currentChatPartnerIdentifier = currentChatPartnerIdentifier ?: extractPossibleAccountId(normalizedName)
-        if (oldName != normalizedName) {
-            Log.d(tag, "聊天对象已更新：$oldName -> $currentChatPartnerName")
+        currentChatPartnerIdentifier = extractPossibleAccountId(normalizedName)
+        if (oldName != normalizedName || oldIdentifier != currentChatPartnerIdentifier) {
+            Log.d(
+                tag,
+                "聊天对象已更新：$oldName/$oldIdentifier -> $currentChatPartnerName/$currentChatPartnerIdentifier"
+            )
         }
     }
 
