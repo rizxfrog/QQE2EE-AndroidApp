@@ -93,7 +93,7 @@ object CryptoManager {
     }
 
     /**
-     * ✨ [私有核心] 真正执行加密操作的函数
+     * ✨ 私有核心 真正执行加密操作的函数
      * @param plaintextBytes 需要加密的原始数据（明文）
      * @param key 用于加密的密钥字符串（通常是一个密码或 Passphrase）
      * return 加密后的数据（密文），其中包含了 IV（初始化向量） 和 实际密文。
@@ -110,7 +110,7 @@ object CryptoManager {
     }
 
     /**
-     * ✨ [私有核心] 真正执行解密操作的函数
+     * ✨ 私有核心 真正执行解密操作的函数
      */
     private fun decryptBytes(combinedBytes: ByteArray, key: String): ByteArray? {
         try {
