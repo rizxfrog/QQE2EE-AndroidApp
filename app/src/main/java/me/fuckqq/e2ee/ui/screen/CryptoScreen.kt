@@ -572,6 +572,15 @@ private fun SecretChatSessionItem(
     session: PeerSession,
     onDelete: () -> Unit
 ) {
+    val context = LocalContext.current
+    val appLabel = remember(session.appDisplayName, session.appPackageName) {
+        resolveSessionAppLabel(context, session)
+    }
+    val peerName = session.peerDisplayName ?: session.peerIdRaw ?: session.peerHash
+    val peerIdentity = session.peerUniqueId?.takeIf { it != peerName }
+        ?: session.peerIdRaw?.takeIf { it != peerName }
+        ?: session.peerHash.take(12)
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
@@ -591,13 +600,18 @@ private fun SecretChatSessionItem(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = session.peerDisplayName ?: session.peerIdRaw ?: session.peerHash,
+                    text = peerName,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = session.peerUniqueId ?: session.peerIdRaw ?: session.peerHash.take(12),
+                    text = appLabel,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = peerIdentity,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -646,6 +660,16 @@ private fun formatSessionUpdatedAt(updatedAt: Long): String {
     if (updatedAt <= 0L) return "未知"
     return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
         .format(Date(updatedAt))
+}
+
+private fun resolveSessionAppLabel(context: Context, session: PeerSession): String {
+    session.appDisplayName?.takeIf { it.isNotBlank() }?.let { return it }
+    val packageName = session.appPackageName?.takeIf { it.isNotBlank() } ?: return "未知应用"
+    return runCatching {
+        val pm = context.packageManager
+        val appInfo = pm.getApplicationInfo(packageName, 0)
+        pm.getApplicationLabel(appInfo).toString()
+    }.getOrElse { packageName }
 }
 
 private suspend fun saveImageToGallery(context: Context,uri: Uri, fileInfo: NCFileProtocol): Boolean {

@@ -1,6 +1,7 @@
 package me.fuckqq.e2ee.service.handler
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.net.Uri
@@ -604,8 +605,18 @@ abstract class BaseChatAppHandler : ChatAppHandler {
     private fun resolveCurrentPeerDescriptor() = SessionKeyManager.buildPeerDescriptor(
         packageName = packageName,
         uniqueId = currentChatPartnerIdentifier,
-        displayName = currentChatPartnerName
+        displayName = currentChatPartnerName,
+        appDisplayName = getAppDisplayName()
     )
+
+    override fun getAppDisplayName(): String? {
+        val appContext = service ?: return null
+        return runCatching {
+            val pm = appContext.packageManager
+            val appInfo = pm.getApplicationInfo(packageName, 0)
+            pm.getApplicationLabel(appInfo).toString()
+        }.getOrNull()
+    }
 
     private fun resolveActiveEncryptionKey(
         defaultKey: String,

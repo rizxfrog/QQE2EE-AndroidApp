@@ -38,16 +38,20 @@ object SessionKeyManager {
     fun buildPeerDescriptor(
         packageName: String,
         uniqueId: String?,
-        displayName: String?
+        displayName: String?,
+        appDisplayName: String?
     ): PeerDescriptor? {
         val normalizedUniqueId = uniqueId?.trim()?.takeIf { it.isNotEmpty() }
         val normalizedDisplayName = displayName?.trim()?.takeIf { it.isNotEmpty() }
+        val normalizedAppDisplayName = appDisplayName?.trim()?.takeIf { it.isNotEmpty() }
         val rawId = normalizedUniqueId ?: normalizedDisplayName ?: return null
         return PeerDescriptor(
             rawId = rawId,
             hash = sha256Hex("$packageName:$rawId"),
             displayName = normalizedDisplayName ?: rawId,
-            uniqueId = normalizedUniqueId
+            uniqueId = normalizedUniqueId,
+            appPackageName = packageName,
+            appDisplayName = normalizedAppDisplayName ?: packageName
         )
     }
 
@@ -78,6 +82,8 @@ object SessionKeyManager {
             peerIdRaw = peer.rawId,
             peerDisplayName = peer.displayName,
             peerUniqueId = peer.uniqueId,
+            appPackageName = peer.appPackageName,
+            appDisplayName = peer.appDisplayName,
             mode = SecretChatMode.SECRET_PENDING_OUT,
             localPrivateKey = keyPair.private.encoded.toBase64(),
             localPublicKey = publicKeyBase64,
@@ -168,6 +174,8 @@ object SessionKeyManager {
             peerIdRaw = peer.rawId,
             peerDisplayName = peer.displayName,
             peerUniqueId = peer.uniqueId,
+            appPackageName = peer.appPackageName,
+            appDisplayName = peer.appDisplayName,
             mode = SecretChatMode.SECRET_ESTABLISHED,
             localPrivateKey = localKeyPair.privateKey,
             localPublicKey = localKeyPair.publicKey,
@@ -228,6 +236,8 @@ object SessionKeyManager {
                 peerIdRaw = peer.rawId,
                 peerDisplayName = peer.displayName,
                 peerUniqueId = peer.uniqueId,
+                appPackageName = peer.appPackageName,
+                appDisplayName = peer.appDisplayName,
                 mode = SecretChatMode.SECRET_ESTABLISHED,
                 remotePublicKey = payload.pub,
                 sharedKey = sharedKey,
@@ -345,6 +355,8 @@ data class PeerSession(
     val peerIdRaw: String? = null,
     val peerDisplayName: String? = null,
     val peerUniqueId: String? = null,
+    val appPackageName: String? = null,
+    val appDisplayName: String? = null,
     val mode: SecretChatMode = SecretChatMode.DEFAULT,
     val localPrivateKey: String? = null,
     val localPublicKey: String? = null,
@@ -365,7 +377,9 @@ data class PeerDescriptor(
     val rawId: String,
     val hash: String,
     val displayName: String,
-    val uniqueId: String? = null
+    val uniqueId: String? = null,
+    val appPackageName: String,
+    val appDisplayName: String
 )
 
 @Serializable
