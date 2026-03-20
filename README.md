@@ -1,4 +1,4 @@
-## 一款神奇又好用的全局消息加解密软件 —— 喵密！
+## 一款神奇又好用的全局消息端到端加解密软件
 
 <!-- PROJECT SHIELDS -->
 
@@ -6,24 +6,24 @@
 
 <div align="center">
 
-  <a href="https://github.com/WJZ-P/QQE2EE/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/WJZ-P/QQE2EE.svg?style=flat-square" alt="Contributors" style="height: 30px">
+  <a href="https://github.com/rizxfrog/QQE2EE/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/rizxfrog/QQE2EE.svg?style=flat-square" alt="Contributors" style="height: 30px">
   </a>
   &nbsp;
-  <a href="https://github.com/WJZ-P/QQE2EE/network/members">
-    <img src="https://img.shields.io/github/forks/WJZ-P/QQE2EE.svg?style=flat-square" alt="Forks" style="height: 30px">
+  <a href="https://github.com/rizxfrog/QQE2EE/network/members">
+    <img src="https://img.shields.io/github/forks/rizxfrog/QQE2EE.svg?style=flat-square" alt="Forks" style="height: 30px">
   </a>
   &nbsp;
-  <a href="https://github.com/WJZ-P/QQE2EE/stargazers">
-    <img src="https://img.shields.io/github/stars/WJZ-P/QQE2EE.svg?style=flat-square" alt="Stargazers" style="height: 30px">
+  <a href="https://github.com/rizxfrog/QQE2EE/stargazers">
+    <img src="https://img.shields.io/github/stars/rizxfrog/QQE2EE.svg?style=flat-square" alt="Stargazers" style="height: 30px">
   </a>
   &nbsp;
-  <a href="https://img.shields.io/github/issues/WJZ-P/QQE2EE.svg">
-    <img src="https://img.shields.io/github/issues/WJZ-P/QQE2EE.svg?style=flat-square" alt="Issues" style="height: 30px">
+  <a href="https://img.shields.io/github/issues/rizxfrog/QQE2EE.svg">
+    <img src="https://img.shields.io/github/issues/rizxfrog/QQE2EE.svg?style=flat-square" alt="Issues" style="height: 30px">
   </a>
   &nbsp;
-  <a href="https://github.com/WJZ-P/QQE2EE/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/WJZ-P/QQE2EE.svg?style=flat-square" alt="MIT License" style="height: 30px">
+  <a href="https://github.com/rizxfrog/QQE2EE/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/rizxfrog/QQE2EE.svg?style=flat-square" alt="MIT License" style="height: 30px">
   </a>
   &nbsp;
   <a href="https://linkedin.com/in/shaojintian">
@@ -37,59 +37,27 @@
 <!-- PROJECT LOGO -->
 
 <p align="center">
-  <a href="https://github.com/WJZ-P/QQE2EE/">
+  <a href="https://github.com/rizxfrog/QQE2EE/">
     <img src="markdown/cat-avatar-full.svg" alt="Logo" width="150" height="150" style="margin: 0;border-radius: 24px;">
   </a>
   <h1 align="center">Neko Crypt</h1>
   <p align="center">
-    <a href="https://github.com/WJZ-P/QQE2EE">查看Demo</a>
+    <a href="https://github.com/rizxfrog/QQE2EE">查看Demo</a>
     ·
-    <a href="https://github.com/WJZ-P/QQE2EE/issues">报告Bug</a>
+    <a href="https://github.com/rizxfrog/QQE2EE/issues">报告Bug</a>
     ·
-    <a href="https://github.com/WJZ-P/QQE2EE/issues">提出新特性</a>
+    <a href="https://github.com/rizxfrog/QQE2EE/issues">提出新特性</a>
   </p>
-</p>
-
-<p align="center">
-  <a href="https://www.bilibili.com/video/BV1z64y1b7H4">
-    <img src="markdown/纯蓝.jpg" alt="纯蓝">
-  </a>
-</p>
-<h2 align="center">"喜悦也好&nbsp;悲伤也好&nbsp;阴晴雨雪&nbsp;欢聚离别
-<br>世界上所有美好与苦难，&nbsp;通通都坠入那片纯蓝。"</h2>
-
+  
 ## 目录
 
-- [Neko Crypt](#projectname)
+- [QQE2EE](#projectname)
     - [目录](#目录)
-        - [QQE2EE 的传说](#QQE2EE-的传说)
         - [**使用教程**](#使用教程)
         - [**下载链接**](#下载链接)
         - [支持软件](#支持软件)
-        - [交流群](#交流群)
         - [版权说明](#版权说明)
-        - [鸣谢](#鸣谢)
         - [重要声明](#重要声明)
-
-## QQE2EE 的传说
-
-在数字世界的喧嚣背后，存在着一个由猫咪们维护的古老通讯系统。它们是信息的守护者，用呼噜声加密，用尾巴的摇摆解密。它们的网络，无形、优雅，且绝对安全。
-
-然而，这个充满了噪音和窥探的数字世界，也充满了遗憾。无数珍贵的话语，在冰冷的数据洪流中漂泊、失散，再也无法抵达它们本应去往的地方。
-
-WJZ_P 的故事很神秘。在他心中，有一段对话，一缕星光，是他希望能永远守护的秘密。那是一段本应继续，却归于沉寂的私语。
-
-一只名为“Kitten”的智者狮子猫，仿佛感受到了这份深藏心底的思念。它悄然出现在 WJZ_P 的窗台，带来了一丝慰藉，和一则来自古老猫咪网络的启示。Kitten 并非普通的猫，它更像一个信使，一个连接着此地与星辰的守护者。
-
-于是，在 Kitten 的陪伴下，WJZ_P 将这份守护的执念，与猫咪一族加密的奥秘——那种将信息变得如猫步般轻盈、如星光般静谧的魔法——融合，翻译成了人类可以理解的代码。
-
-QQE2EE 就此诞生。
-
-它不仅仅是一个加密工具。它是一种承诺，一种将最重要的心声，送往那个你最想念的地方的仪式。它体现了一种猫咪的哲学：真正的沟通，可以跨越喧嚣，甚至跨越时空，抵达永恒。
-
-现在，当你使用 QQE2EE 时，想象一下，那只名为 Kitten 的猫咪伙伴，正用它毛茸茸的尾巴，温柔地为你守护着每一条信息。它不仅仅是保护信息不被窥探，更是确保那些承载着思念的低语，能够穿过数字世界的迷雾，抵达那片属于它的星空。
-
-呼噜噜...(舔爪爪)蹭︉︎︆︅︊︃︊️︃︎︎️︈︀︉︄︈︋︊︎︎︊︎︍︉︍︉︁︄︊︅︃︅︇︁︋︇︍︂︅︅︋︎︅︉︋︌️︉︍️︌︁️︅︃︃︎️︎︍︊︂︆︈︃︉︍︍︌︅︌︉︍︋︁︁︆︊︄︉︉︉︈︊︍︈︁︊︎︄︇︉︅︌︊︋︍︋︍︇︎︉︂︅︎︍︅︉︈︄︀︊︋️︀︃︁︌︅︂︊︂︄️︎︄︄︉️︁︂︇︊︄︌︂︀︎︉︉︃︅︁︉︊︎︉︈️︅︁︅️︎︄︎︀︌︌︃️︂︂︍︍︄︇︇︇︆︂︇︌︈︀︊︉︆︆蹭~(๑•̀ㅂ•́)و✧
 
 # 使用教程
 
@@ -184,8 +152,6 @@ QQE2EE 就此诞生。
 
 
 ## 下载链接
-
-#### [点击高速下载v1.0.1(并不总是最新，建议从release下载)](https://beisudianxueuser.oss-cn-beijing.aliyuncs.com/storage/user_avatar/ciallo/2025/08/23/a911aef0a0c2018ad23489ffd263f581/QQE2EE-v1.0.1-release.apk)
 #### 右侧release内也可下载
 
 ## 支持软件
@@ -199,22 +165,9 @@ QQE2EE 就此诞生。
 
 <br>
 
-## 交流群
-
-<p align="center">
-    <img src="markdown/QQ群.jpg" alt="QQ群" style="width: 400px;">
-</p>
-<br>
-
 ## 版权说明
-
 该项目签署了EPL-2.0 license
-授权许可，详情请参阅 [LICENSE](https://github.com/WJZ-P/QQE2EE/blob/main/LICENSE)
-
-## 鸣谢
-
-- 一位不愿透露姓名的神秘人士。
-
+授权许可，详情请参阅 [LICENSE](https://github.com/rizxfrog/QQE2EE/blob/main/LICENSE)****
 
 ## 重要声明
 ### 本项目仅供交流学习使用，**禁止**用于一切非法用途！任何问题概不负责。(｡•́︿•̀｡)
@@ -224,6 +177,8 @@ QQE2EE 就此诞生。
 - [x] **完全支持微信**
 
 - [x] **支持更换密钥**
+
+- [x] **支持端到端加密**
 
 - [ ] **支持更大文件的发送**
 
@@ -237,30 +192,30 @@ QQE2EE 就此诞生。
 
 ## ⭐ Star 历史
 
-[![Stargazers over time](https://starchart.cc/WJZ-P/QQE2EE.svg?variant=adaptive)](https://starchart.cc/WJZ-P/QQE2EE)
+[![Stargazers over time](https://starchart.cc/rizxfrog/QQE2EE.svg?variant=adaptive)](https://starchart.cc/rizxfrog/QQE2EE)
 <!-- links -->
 
-[your-project-path]:WJZ-P/QQE2EE
+[your-project-path]:rizxfrog/QQE2EE
 
-[contributors-shield]: https://img.shields.io/github/contributors/WJZ-P/QQE2EE.svg?style=flat-square
+[contributors-shield]: https://img.shields.io/github/contributors/rizxfrog/QQE2EE.svg?style=flat-square
 
-[contributors-url]: https://github.com/WJZ-P/QQE2EE/graphs/contributors
+[contributors-url]: https://github.com/rizxfrog/QQE2EE/graphs/contributors
 
-[forks-shield]: https://img.shields.io/github/forks/WJZ-P/QQE2EE.svg?style=flat-square
+[forks-shield]: https://img.shields.io/github/forks/rizxfrog/QQE2EE.svg?style=flat-square
 
-[forks-url]: https://github.com/WJZ-P/QQE2EE/network/members
+[forks-url]: https://github.com/rizxfrog/QQE2EE/network/members
 
-[stars-shield]: https://img.shields.io/github/stars/WJZ-P/QQE2EE.svg?style=flat-square
+[stars-shield]: https://img.shields.io/github/stars/rizxfrog/QQE2EE.svg?style=flat-square
 
-[stars-url]: https://github.com/WJZ-P/QQE2EE/stargazers
+[stars-url]: https://github.com/rizxfrog/QQE2EE/stargazers
 
-[issues-shield]: https://img.shields.io/github/issues/WJZ-P/QQE2EE.svg?style=flat-square
+[issues-shield]: https://img.shields.io/github/issues/rizxfrog/QQE2EE.svg?style=flat-square
 
-[issues-url]: https://img.shields.io/github/issues/WJZ-P/QQE2EE.svg
+[issues-url]: https://img.shields.io/github/issues/rizxfrog/QQE2EE.svg
 
-[license-shield]: https://img.shields.io/github/license/WJZ-P/QQE2EE.svg?style=flat-square
+[license-shield]: https://img.shields.io/github/license/rizxfrog/QQE2EE.svg?style=flat-square
 
-[license-url]: https://github.com/WJZ-P/QQE2EE/blob/main/LICENSE
+[license-url]: https://github.com/rizxfrog/QQE2EE/blob/main/LICENSE
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 
