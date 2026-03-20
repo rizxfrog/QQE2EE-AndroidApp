@@ -40,7 +40,7 @@
   <a href="https://github.com/rizxfrog/QQE2EE/">
     <img src="markdown/cat-avatar-full.svg" alt="Logo" width="150" height="150" style="margin: 0;border-radius: 24px;">
   </a>
-  <h1 align="center">Neko Crypt</h1>
+  <h1 align="center">QQE2EE</h1>
   <p align="center">
     <a href="https://github.com/rizxfrog/QQE2EE">查看Demo</a>
     ·
